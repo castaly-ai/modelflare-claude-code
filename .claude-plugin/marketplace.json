@@ -1,0 +1,13 @@
+{
+  "name": "modelflare",
+  "description": "Modelflare plugins for Claude Code: image and video generation with one Smart API Key.",
+  "owner": {
+    "name": "Havenbyte LLC"
+  },
+  "plugins": [
+    {
+      "name": "modelflare",
+      "source": "./"
+    }
+  ]
+}
