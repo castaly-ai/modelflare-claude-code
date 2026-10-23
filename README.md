@@ -22,6 +22,8 @@ Then set the key in the environment Claude Code runs in / 然后在 Claude Code 
 
 ```bash
 export MODELFLARE_API_KEY="<your Smart API Key>"
+# Optional: China entry / 国内入口
+export MODELFLARE_BASE_URL="https://origin.modelflare.dev/v1"
 ```
 
 On Windows PowerShell: `setx MODELFLARE_API_KEY "<your Smart API Key>"`.

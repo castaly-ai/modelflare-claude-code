@@ -1,9 +1,9 @@
 ---
 name: modelflare-media
 description: Generate and edit images and generate videos with any image or video model on Modelflare through its OpenAI-compatible API. Use when the user asks to create, edit, upscale or animate pictures or videos, wants to compare media models or prices, or mentions Modelflare, Castaly or MODELFLARE_API_KEY.
-version: 1.0
+version: 1.1
 metadata:
-  generated_at: 2026-10-14T04:30:22Z
+  generated_at: 2026-10-23T18:57:41Z
   source: https://modelflare.dev/skills/modelflare-media/claude-code/SKILL.md
   image_models: 14
   video_models: 28
@@ -16,16 +16,19 @@ Modelflare is an API gateway that exposes OpenAI-compatible image/video routes a
 ## Authentication
 
 - The key comes from the environment variable `MODELFLARE_API_KEY`, or from the user when they hand it to you directly; in that case put it into the environment you run commands in (macOS/Linux: `export MODELFLARE_API_KEY=...`; Windows PowerShell: `$env:MODELFLARE_API_KEY="..."`) rather than into a file. Never print it and never write it into files, prompts or code. If there is no key at all, ask the user to create one at https://modelflare.dev/keys. Do not guess a key.
-- Base URL `https://modelflare.dev`. Every request carries `Authorization: Bearer $MODELFLARE_API_KEY`, `Content-Type: application/json` and `X-Modelflare-Skill: modelflare-claude-code/1.0` (the last one lets the user's usage logs show this skill).
+- API base URL comes from `MODELFLARE_BASE_URL`; use `https://modelflare.dev/v1` by default or `https://origin.modelflare.dev/v1` for the China entry. Every request carries `Authorization: Bearer $MODELFLARE_API_KEY`, `Content-Type: application/json` and `X-Modelflare-Skill: modelflare-claude-code/1.1` (the last one lets the user's usage logs show this skill).
 - Generation calls are billed from the user's Modelflare balance by actual usage. The exact charge appears in the usage logs at https://modelflare.dev/usage-logs.
 
 ## Find a model
 
+First read the key-scoped list; it is the authority for what this account can call:
+
 ```bash
-curl -s https://modelflare.dev/api/pricing
+API_BASE="${MODELFLARE_BASE_URL:-https://modelflare.dev/v1}"
+curl -s "$API_BASE/models?scope=authorized" -H "Authorization: Bearer $MODELFLARE_API_KEY" -H "X-Modelflare-Skill: modelflare-claude-code/1.1"
 ```
 
-Every entry carries `model_name`, `supported_endpoint_types`, `enable_groups` and its price fields. Image prices are USD per image for a given `size` and `quality`; video prices are USD per second for a given `resolution`, and feature rows add modes such as image-to-video or audio with their own minimum billed length. A model is callable only if one of its `enable_groups` is unlocked on the user's account; the default Modelflare key routes across unlocked groups automatically.
+Each returned model includes `kind` and, for image models, `image_route`. Use those fields instead of guessing from the name. Read `https://modelflare.dev/api/pricing` only for public price/request metadata, and intersect it with the IDs returned by the key-scoped list. A Smart API Key routes across public groups plus the groups unlocked on the account.
 
 ## Read the model's request contract
 
@@ -43,7 +46,7 @@ Read that page before building a request: families differ in where the model ID 
 - `401`: the key is missing or wrong.
 - `403` with code `insufficient_user_quota`: the account balance is empty. Top-ups are at https://modelflare.dev/billing.
 - `429`: rate limited. The response carries `Retry-After` in seconds.
-- `model_not_found`, `model_unavailable`, `unsupported_endpoint` or a group error: the key is valid, but that model or endpoint is not available to this account.
+- `model_not_found`, `unsupported_endpoint` or a group error: the key is valid, but that model or endpoint is not available to this account.
 - Any other `4xx`/`5xx` or a failed video task: the response carries a message and a request id.
 
 Latest version: https://modelflare.dev/skills/modelflare-media/claude-code/SKILL.md. This copy ships inside the Modelflare plugin for Claude Code; update the plugin to get a newer version.

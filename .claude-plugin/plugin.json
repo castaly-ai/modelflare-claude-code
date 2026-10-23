@@ -1,12 +1,12 @@
 {
   "name": "modelflare",
   "displayName": "Modelflare",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Generate and edit images and generate videos with any image or video model on Modelflare, using one Smart API Key.",
   "author": {
     "name": "Havenbyte LLC"
   },
   "homepage": "https://modelflare.dev/sign-up?utm_source=claude-code&utm_medium=plugin&utm_campaign=integrations",
-  "repository": "https://github.com/modelflare/modelflare-claude-code",
+  "repository": "https://github.com/castaly-ai/modelflare-claude-code",
   "license": "MIT"
 }
